@@ -15,6 +15,22 @@ export const Form = () => {
       aboutRef.current.value,
       country
     );
+    let data = {
+      fullName: fullName,
+      username: usernameRef.current.value,
+      about: aboutRef.current.value,
+      country: country,
+    };
+    chrome.runtime.sendMessage(
+      "ehhaepoekddaiogbllbaanebolnekbpi",
+      {
+        type: "form-data",
+        data: data,
+      },
+      (response) => {
+        console.log(response);
+      }
+    );
   }
   return (
     <div className="container">
