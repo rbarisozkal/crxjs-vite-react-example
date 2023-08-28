@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import "./popup.css";
 export const Popup = () => {
@@ -5,20 +6,40 @@ export const Popup = () => {
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const aboutRef = useRef<HTMLTextAreaElement | null>(null);
   const countryRef = useRef<HTMLInputElement | null>(null);
+  async function sendDataToWebApp() {
+    const formData = {
+      fullName: fullNameRef.current.value,
+      username: usernameRef.current.value,
+      about: aboutRef.current.value,
+      country: countryRef.current.value,
+    };
+    const response = await chrome.runtime.sendMessage({
+      type: "form-data",
+      data: formData,
+    });
+    chrome.tabs.query({ url: "http://localhost:3000/*" }, (tabs) => {
+      if (tabs.length > 0) {
+        const activeTab = tabs[0];
+        chrome.runtime.sendMessage(activeTab.id, formData, (response) => {
+          if (response) {
+            console.log("Message sent successfully:", response);
+          } else {
+            console.log("No response received.");
+          }
+        });
+      } else {
+        console.log("Tab not found.");
+      }
+    });
+  }
   useEffect(() => {
-    // Update the document title using the browser API
-    // background.js
-
-    // Example: Listen to messages from content scripts or popup
-    //@ts-ignore
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.data) {
-        if (fullNameRef.current)
-          fullNameRef.current.value = message.data.fullName;
-        if (usernameRef.current)
-          usernameRef.current.value = message.data.username;
-        if (aboutRef.current) aboutRef.current.value = message.data.about;
-        if (countryRef.current) countryRef.current.value = message.data.country;
+    chrome.storage.local.get(["formData"], (result) => {
+      const formData = result.formData;
+      if (formData) {
+        if (fullNameRef.current) fullNameRef.current.value = formData.fullName;
+        if (usernameRef.current) usernameRef.current.value = formData.username;
+        if (aboutRef.current) aboutRef.current.value = formData.about;
+        if (countryRef.current) countryRef.current.value = formData.country;
       }
     });
   });
@@ -105,7 +126,8 @@ export const Popup = () => {
 
               <div>
                 <button
-                  type="submit"
+                  onClick={sendDataToWebApp}
+                  type="button"
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Send

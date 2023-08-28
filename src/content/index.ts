@@ -1,17 +1,27 @@
-(() => {
+//@ts-nocheck
+(async () => {
     console.log('content.js');
+    if (chrome.runtime) {
+        console.log('chrome.runtime is available');
+    } else {
+        console.log('chrome.runtime is not available');
+    }
+    //@ts-ignore
+    chrome.runtime.onMessage.addListener((message) => {
+        console.log(message)
+        if (message.type === 'form-data') {
+            // Update the form fields on the web page using DOM manipulation
+            // For example:
+            //const fullNameInput = document.getElementById('firstLastName') as HTMLInputElement;
+            const usernameInput = document.getElementById('username') as HTMLInputElement;
+            const aboutTextarea = document.getElementById('about') as HTMLTextAreaElement;
+            const countrySelect = document.getElementById('country') as HTMLSelectElement;
 
-    // @ts-ignore
-    // content.ts
-    // content.ts
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        console.log(request, sender, sendResponse)
-        if (request.type === "form-data") {
-            const { fullName, username, about, country } = request.data;
-            const usernameInput = document.getElementById("username") as HTMLInputElement;
-            if (usernameInput) {
-                usernameInput.value = username;
-            }
+            //fullNameInput.value = message.data.fullName;
+            usernameInput.value = message.data.username;
+            aboutTextarea.value = message.data.about;
+            countrySelect.value = message.data.country;
         }
     });
+
 })();

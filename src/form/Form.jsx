@@ -1,5 +1,5 @@
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./form.css";
 export const Form = () => {
   const [firstName, setFirstName] = useState("");
@@ -7,6 +7,19 @@ export const Form = () => {
   const usernameRef = useRef();
   const aboutRef = useRef();
   const [country, setCountry] = useState("");
+  // Form.jsx
+  useEffect(() => {
+    // chrome.runtime.onMessage.addListener((message) => {
+    //   if (message.type === "update-form-data") {
+    //     const updatedData = message.data;
+    //     setFullName(updatedData.fullName);
+    //     setUsername(updatedData.username);
+    //     setAbout(updatedData.about);
+    //     setCountry(updatedData.country);
+    //   }
+    // });
+  }, []);
+
   function printFormData() {
     const fullName = `${firstName} ${lastName}`;
     console.log(

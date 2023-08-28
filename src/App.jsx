@@ -269,7 +269,6 @@ function App() {
           </Dialog.Panel>
         </Dialog>
       </header>
-
       <Form />
     </div>
   );
