@@ -4,36 +4,39 @@ import "./form.css";
 import { setupExtensionMessageListener } from ".";
 
 export const Form = () => {
-  useEffect(() => {
-    window.addEventListener("message", (event) => {
-      console.log(event);
-      if (event.source === window && event.data.fromExtension) {
-        const receivedMessage = event.data.message;
-        console.log("Received message from extension:", receivedMessage);
-
-        // Handle the message from the extension
-        // You can update your form fields or perform any other actions here
-      }
-    });
-
-    return () => {
-      // Clean up the event listener
-      window.removeEventListener("message", (event) => {
-        // ...
-      });
-    };
-  }, []);
-
-  const handleExtensionMessage = (receivedMessage) => {
-    console.log("Received message from extension:", receivedMessage);
-  };
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const usernameRef = useRef();
   const aboutRef = useRef();
   const [country, setCountry] = useState("");
+  useEffect(() => {
+    const handleExtensionMessage = (event) => {
+      if (event.source === window && event.data.fromExtension) {
+        const receivedMessage = event.data.message;
+        const receivedFormData = event.data.formData;
+        //split full name into firstname and lastname
+        console.log(receivedMessage, receivedFormData);
+        setFirstName(receivedFormData.fullName.split(" ")[0]);
+        setLastName(receivedFormData.fullName.split(" ")[1]);
+        usernameRef.current.value = receivedFormData.username;
+        aboutRef.current.value = receivedFormData.about;
+        setCountry(receivedFormData.country);
+
+        // Handle the received form data
+        // You can update your form fields or perform any other actions here
+      }
+    };
+
+    window.addEventListener("message", handleExtensionMessage);
+
+    return () => {
+      // Clean up the event listener
+      window.removeEventListener("message", handleExtensionMessage);
+    };
+  }, []);
+
   // Form.jsx
-  useEffect(() => {}, []);
+
   function printFormData() {
     const fullName = `${firstName} ${lastName}`;
     console.log(

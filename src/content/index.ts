@@ -1,5 +1,5 @@
 //@ts-nocheck
-(async () => {
+(() => {
     console.log('content.js');
     if (chrome.runtime) {
         console.log('chrome.runtime is available');
@@ -8,6 +8,7 @@
     }
     //@ts-ignore
     chrome.runtime.onMessage.addListener((message) => {
+        console.log(message)
         if (message.type === 'form-data') {
             // Update the form fields on the web page using DOM manipulation
             // For example:

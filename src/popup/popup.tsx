@@ -14,12 +14,21 @@ export const Popup = () => {
       country: countryRef.current.value,
     };
     // Send a message to the content script of a specific tab
-    chrome.tabs.query({ url: "http://localhost:3000/" }, (tabs) => {
-      console.log(tabs);
+    chrome.tabs.query({ url: "http://localhost:3000/*" }, (tabs) => {
       tabs.forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, {
-          fromExtension: true,
-          message: "Hello from the extension!",
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: (data) => {
+            window.postMessage(
+              {
+                fromExtension: true,
+                message: "Form data received from extension:",
+                formData: data,
+              },
+              "*"
+            );
+          },
+          args: [formData], // Pass the form data to the content script
         });
       });
     });
