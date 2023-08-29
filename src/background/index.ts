@@ -2,6 +2,9 @@
 (() => {
     console.log('background.js');
 
+
+
+
     // @ts-ignore
     chrome.runtime.onMessageExternal.addListener(
         (request: any, sender: any, sendResponse: any) => {
@@ -52,6 +55,22 @@
                     break;
                 default:
                     console.log("undefined type")
+                    break;
+            }
+        }
+    );
+    chrome.runtime.onMessageExternal.addListener(
+        (request, sender, sendResponse) => {
+            console.log('request', request);
+            switch (request.type) {
+                case 'form-data':
+                    // Store the form data in storage
+                    chrome.storage.local.set({ formData: request.data }, () => {
+                        console.log('Data stored.');
+                    });
+                    break;
+                default:
+                    console.log('Undefined type');
                     break;
             }
         }

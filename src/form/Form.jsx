@@ -1,25 +1,39 @@
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import React, { useRef, useState, useEffect } from "react";
 import "./form.css";
+import { setupExtensionMessageListener } from ".";
+
 export const Form = () => {
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      console.log(event);
+      if (event.source === window && event.data.fromExtension) {
+        const receivedMessage = event.data.message;
+        console.log("Received message from extension:", receivedMessage);
+
+        // Handle the message from the extension
+        // You can update your form fields or perform any other actions here
+      }
+    });
+
+    return () => {
+      // Clean up the event listener
+      window.removeEventListener("message", (event) => {
+        // ...
+      });
+    };
+  }, []);
+
+  const handleExtensionMessage = (receivedMessage) => {
+    console.log("Received message from extension:", receivedMessage);
+  };
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const usernameRef = useRef();
   const aboutRef = useRef();
   const [country, setCountry] = useState("");
   // Form.jsx
-  useEffect(() => {
-    // chrome.runtime.onMessage.addListener((message) => {
-    //   if (message.type === "update-form-data") {
-    //     const updatedData = message.data;
-    //     setFullName(updatedData.fullName);
-    //     setUsername(updatedData.username);
-    //     setAbout(updatedData.about);
-    //     setCountry(updatedData.country);
-    //   }
-    // });
-  }, []);
-
+  useEffect(() => {}, []);
   function printFormData() {
     const fullName = `${firstName} ${lastName}`;
     console.log(

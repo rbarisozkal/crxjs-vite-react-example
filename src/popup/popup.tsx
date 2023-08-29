@@ -13,23 +13,15 @@ export const Popup = () => {
       about: aboutRef.current.value,
       country: countryRef.current.value,
     };
-    const response = await chrome.runtime.sendMessage({
-      type: "form-data",
-      data: formData,
-    });
-    chrome.tabs.query({ url: "http://localhost:3000/*" }, (tabs) => {
-      if (tabs.length > 0) {
-        const activeTab = tabs[0];
-        chrome.runtime.sendMessage(activeTab.id, formData, (response) => {
-          if (response) {
-            console.log("Message sent successfully:", response);
-          } else {
-            console.log("No response received.");
-          }
+    // Send a message to the content script of a specific tab
+    chrome.tabs.query({ url: "http://localhost:3000/" }, (tabs) => {
+      console.log(tabs);
+      tabs.forEach((tab) => {
+        chrome.tabs.sendMessage(tab.id, {
+          fromExtension: true,
+          message: "Hello from the extension!",
         });
-      } else {
-        console.log("Tab not found.");
-      }
+      });
     });
   }
   useEffect(() => {
