@@ -14,16 +14,13 @@ export const Form = () => {
       if (event.source === window && event.data.fromExtension) {
         const receivedMessage = event.data.message;
         const receivedFormData = event.data.formData;
-        //split full name into firstname and lastname
+        let name = receivedFormData.fullName.split(" ");
         console.log(receivedMessage, receivedFormData);
-        setFirstName(receivedFormData.fullName.split(" ")[0]);
-        setLastName(receivedFormData.fullName.split(" ")[1]);
+        setFirstName((prevFirstName) => name[0]);
+        setLastName((prevLastName) => name[1]);
         usernameRef.current.value = receivedFormData.username;
         aboutRef.current.value = receivedFormData.about;
         setCountry(receivedFormData.country);
-
-        // Handle the received form data
-        // You can update your form fields or perform any other actions here
       }
     };
 
@@ -33,7 +30,16 @@ export const Form = () => {
       // Clean up the event listener
       window.removeEventListener("message", handleExtensionMessage);
     };
-  }, []);
+  }, [
+    firstName,
+    lastName,
+    usernameRef,
+    aboutRef,
+    country,
+    setFirstName,
+    setLastName,
+    setCountry,
+  ]);
 
   // Form.jsx
 
