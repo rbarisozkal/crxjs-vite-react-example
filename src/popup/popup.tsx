@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import "./popup.css";
+import * as carbynestack from "carbynestack-extension-js";
 export const Popup = () => {
   const fullNameRef = useRef<HTMLInputElement | null>(null);
   const usernameRef = useRef<HTMLInputElement | null>(null);
@@ -34,16 +35,15 @@ export const Popup = () => {
     });
   }
   useEffect(() => {
-    chrome.storage.local.get(["data"], (result) => {
-      const formData = result.data;
-      if (formData) {
-        if (fullNameRef.current) fullNameRef.current.value = formData.fullName;
-        if (usernameRef.current) usernameRef.current.value = formData.username;
-        if (aboutRef.current) aboutRef.current.value = formData.about;
-        if (countryRef.current) countryRef.current.value = formData.country;
+    carbynestack.getDataFromLocalStorage((res) => {
+      if (res) {
+        if (fullNameRef.current) fullNameRef.current.value = res.fullName;
+        if (usernameRef.current) usernameRef.current.value = res.username;
+        if (aboutRef.current) aboutRef.current.value = res.about;
+        if (countryRef.current) countryRef.current.value = res.country;
       }
     });
-  });
+  }, []);
   return (
     <>
       <div className="popup">

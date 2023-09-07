@@ -10,7 +10,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
-    "carbynestack-extension-js": "^1.0.3",
+    "carbynestack-extension-js": "^1.0.11",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
