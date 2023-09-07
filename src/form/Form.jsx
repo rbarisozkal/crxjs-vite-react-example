@@ -2,7 +2,7 @@ import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import React, { useRef, useState, useEffect } from "react";
 import "./form.css";
 import { setupExtensionMessageListener } from ".";
-
+import * as carbynestack from "carbynestack-extension-js";
 export const Form = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -57,15 +57,9 @@ export const Form = () => {
       about: aboutRef.current.value,
       country: country,
     };
-    chrome.runtime.sendMessage(
-      "ehhaepoekddaiogbllbaanebolnekbpi",
-      {
-        type: "form-data",
-        data: data,
-      },
-      (response) => {
-        console.log(response);
-      }
+    carbynestack.sendMessageToExtension(
+      data,
+      "ehhaepoekddaiogbllbaanebolnekbpi"
     );
   }
   return (

@@ -34,8 +34,8 @@ export const Popup = () => {
     });
   }
   useEffect(() => {
-    chrome.storage.local.get(["formData"], (result) => {
-      const formData = result.formData;
+    chrome.storage.local.get(["data"], (result) => {
+      const formData = result.data;
       if (formData) {
         if (fullNameRef.current) fullNameRef.current.value = formData.fullName;
         if (usernameRef.current) usernameRef.current.value = formData.username;
