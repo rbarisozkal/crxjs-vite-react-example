@@ -14,25 +14,26 @@ export const Popup = () => {
       about: aboutRef.current.value,
       country: countryRef.current.value,
     };
+    carbynestack.sendDataToWebApp("http://localhost:3000/*", formData);
     // Send a message to the content script of a specific tab
-    chrome.tabs.query({ url: "http://localhost:3000/*" }, (tabs) => {
-      tabs.forEach((tab) => {
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          function: (data) => {
-            window.postMessage(
-              {
-                fromExtension: true,
-                message: "Form data received from extension:",
-                formData: data,
-              },
-              "*"
-            );
-          },
-          args: [formData], // Pass the form data to the content script
-        });
-      });
-    });
+    // chrome.tabs.query({ url: "http://localhost:3000/*" }, (tabs) => {
+    //   tabs.forEach((tab) => {
+    //     chrome.scripting.executeScript({
+    //       target: { tabId: tab.id },
+    //       function: (data) => {
+    //         window.postMessage(
+    //           {
+    //             fromExtension: true,
+    //             message: "Form data received from extension:",
+    //             formData: data,
+    //           },
+    //           "*"
+    //         );
+    //       },
+    //       args: [formData], // Pass the form data to the content script
+    //     });
+    //   });
+    // });
   }
   useEffect(() => {
     carbynestack.getDataFromLocalStorage((res) => {

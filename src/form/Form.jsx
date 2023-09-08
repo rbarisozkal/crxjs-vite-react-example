@@ -4,58 +4,47 @@ import "./form.css";
 import { setupExtensionMessageListener } from ".";
 import * as carbynestack from "carbynestack-extension-js";
 export const Form = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
+  const firstName = useRef();
+  const lastName = useRef();
   const usernameRef = useRef();
   const aboutRef = useRef();
-  const [country, setCountry] = useState("");
+  const country = useRef();
   useEffect(() => {
     const handleExtensionMessage = (event) => {
+      console.log(event);
       if (event.source === window && event.data.fromExtension) {
         const receivedMessage = event.data.message;
-        const receivedFormData = event.data.formData;
-        let name = receivedFormData.fullName.split(" ");
+        const receivedFormData = event.data.data;
         console.log(receivedMessage, receivedFormData);
-        setFirstName((prevFirstName) => name[0]);
-        setLastName((prevLastName) => name[1]);
+        let nameF = receivedFormData.fullName.split(" ")[0];
+        let last = receivedFormData.fullName.split(" ")[1];
         usernameRef.current.value = receivedFormData.username;
         aboutRef.current.value = receivedFormData.about;
-        setCountry(receivedFormData.country);
+        firstName.current.value = nameF;
+        lastName.current.value = last;
+        country.current.value = receivedFormData.country;
       }
     };
-
     window.addEventListener("message", handleExtensionMessage);
-
     return () => {
-      // Clean up the event listener
       window.removeEventListener("message", handleExtensionMessage);
     };
-  }, [
-    firstName,
-    lastName,
-    usernameRef,
-    aboutRef,
-    country,
-    setFirstName,
-    setLastName,
-    setCountry,
-  ]);
-
-  // Form.jsx
-
+  }, []);
   function printFormData() {
-    const fullName = `${firstName} ${lastName}`;
+    const fullName = `${firstName.current.value} ${lastName.current.value}`;
     console.log(
       fullName,
       usernameRef.current.value,
       aboutRef.current.value,
-      country
+      country.current.value
     );
     let data = {
       fullName: fullName,
       username: usernameRef.current.value,
       about: aboutRef.current.value,
-      country: country,
+      country: country.current.value,
     };
     carbynestack.sendMessageToExtension(
       data,
@@ -132,7 +121,7 @@ export const Form = () => {
                 </label>
                 <div className="mt-2">
                   <input
-                    onChange={(e) => setFirstName(e.target.value)}
+                    ref={firstName}
                     type="text"
                     name="first-name"
                     id="first-name"
@@ -152,7 +141,7 @@ export const Form = () => {
                 <div className="mt-2">
                   <input
                     type="text"
-                    onChange={(e) => setLastName(e.target.value)}
+                    ref={lastName}
                     name="last-name"
                     id="last-name"
                     autoComplete="family-name"
@@ -170,7 +159,7 @@ export const Form = () => {
                 </label>
                 <div className="mt-2">
                   <select
-                    onChange={(e) => setCountry(e.target.value)}
+                    ref={country}
                     id="country"
                     name="country"
                     autoComplete="country-name"
